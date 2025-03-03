@@ -9,13 +9,13 @@ namespace PizzaFunction.Models
 {
     public class Pizza
     {
-        [JsonProperty("PizzaName")]
-        public string PizzaName { get; set; }
+        [JsonProperty(nameof(PizzaName))]
+        public string PizzaName { get; set; } = null!;
 
-        [JsonProperty("Quantity")]
-        public int Quantity { get; set; }
+        [JsonProperty(nameof(Quantity))]
+        public string Quantity { get; set; } = null!;
 
-        [JsonProperty("Price")]
-        public decimal Price { get; set; }
+        [JsonProperty(nameof(Price))]
+        public string Price { get; set; } = null!;
     }
 }

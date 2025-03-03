@@ -10,24 +10,24 @@ namespace PizzaFunction.Models
     public class Order
     {
         [JsonProperty("id")]
-        public string Id { get; set; }
+        public string Id { get; set; } = null!;
 
-        [JsonProperty("OrderNo")]
-        public string OrderNo { get; set; }
+        [JsonProperty(nameof(OrderNo))]
+        public string OrderNo { get; set; } = null!;
 
-        [JsonProperty("OrderId")]
-        public string OrderId { get; set; }
+        [JsonProperty(nameof(OrderId))]
+        public string OrderId { get; set; } = null!;
 
-        [JsonProperty("OrderStatus")]
-        public string OrderStatus { get; set; }
+        [JsonProperty(nameof(OrderStatus))]
+        public string OrderStatus { get; set; } = null!;
 
-        [JsonProperty("CustomerName")]
-        public string CustomerName { get; set; }
+        [JsonProperty(nameof(CustomerName))]
+        public string CustomerName { get; set; } = null!;
 
-        [JsonProperty("OrderTime")]
-        public string OrderTime { get; set; }
+        [JsonProperty(nameof(OrderTime))]
+        public string OrderTime { get; set; } = null!;
 
-        [JsonProperty("Pizzas")]
-        public List<Pizza> Pizzas { get; set; }
+        [JsonProperty(nameof(Pizzas))]
+        public List<Pizza> Pizzas { get; set; } = null!;
     }
 }
