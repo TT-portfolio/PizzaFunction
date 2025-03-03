@@ -20,6 +20,10 @@ namespace PizzaFunction.Functions
         public async Task <IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequest req)
         {
             var client = new SecretClient(new Uri(KeyVaultUri), new DefaultAzureCredential());
+            var secret = await client.GetSecretAsync("PizzaOrderCosmos");
+
+            _logger.LogInformation("Secret retrieved successfully: {SecretValue}", secret.Value.Value);
+
             string cosmosDbConnectionstring = (await client.GetSecretAsync("PizzaOrderCosmos")).Value.Value;
 
             using CosmosClient cosmosClient = new(cosmosDbConnectionstring);
