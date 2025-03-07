@@ -8,6 +8,9 @@
     <UserSecretsId>12ca679b-5192-404a-ac5c-e2192199a0e9</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="local.settings.json" />
+  </ItemGroup>
+  <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.4.0" />
     <PackageReference Include="Azure.Identity" Version="1.13.2" />
