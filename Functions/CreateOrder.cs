@@ -27,7 +27,7 @@ namespace PizzaFunction.Functions
             _logger.LogInformation("Processing new order submission");
 
             try
-            {                
+            {
                 var client = new SecretClient(new Uri(KeyVaultUri), new DefaultAzureCredential());
                 string cosmosDbConnectionString = (await client.GetSecretAsync("PizzaOrderCosmos")).Value.Value;
 
