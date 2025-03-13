@@ -27,7 +27,7 @@ namespace PizzaFunction.Functions
             _logger.LogInformation("Processing new order submission");
 
             try
-            {                
+            {
                 var client = new SecretClient(new Uri(KeyVaultUri), new DefaultAzureCredential());
                 string cosmosDbConnectionString = (await client.GetSecretAsync("PizzaOrderCosmos")).Value.Value;
 
@@ -43,8 +43,8 @@ namespace PizzaFunction.Functions
                 }
 
                 // Create new order
-                var orderNo = $"ORDER-{DateTime.Now.ToString("yyyyMMddHHmmss")}";
-                var orderId = Guid.NewGuid().ToString();
+                var orderNo = Guid.NewGuid().ToString().Substring(0, 10).ToUpper();  //creates unique orderNo, Guids 10 first number/letters 
+                var orderId = Guid.NewGuid().ToString(); //orderId for Db
 
                 // Create PizzaList
                 var pizzas = new List<Pizza>();
@@ -66,8 +66,8 @@ namespace PizzaFunction.Functions
                     OrderId = orderId,
                     OrderNo = orderNo,
                     CustomerName = data.customer.name.ToString(),
-                    OrderStatus = "Pending",
-                    OrderTime = DateTime.UtcNow.ToString("o"),
+                    OrderStatus = "Mottagen",
+                    OrderTime = DateTime.Now.ToString("HH:mm"),   
                     Pizzas = pizzas
                 };
 
