@@ -21,8 +21,17 @@ namespace PizzaFunction.Models
         [JsonProperty(nameof(OrderStatus))]
         public string OrderStatus { get; set; } = null!;
 
-        [JsonProperty(nameof(CustomerName))]
-        public string CustomerName { get; set; } = null!;
+        [JsonProperty(nameof(CustomerFirstName))]
+        public string CustomerFirstName { get; set; } = null!;
+
+        [JsonProperty(nameof(CustomerLastName))]
+        public string CustomerLastName { get; set; } = null!;
+
+        [JsonProperty(nameof(CustomerPhoneNumber))]
+        public string CustomerPhoneNumber { get; set; } = null!;
+
+        [JsonProperty(nameof(CustomerEmail))]
+        public string CustomerEmail { get; set; } = null!;
 
         [JsonProperty(nameof(OrderTime))]
         public string OrderTime { get; set; } = null!;
