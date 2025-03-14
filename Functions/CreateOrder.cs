@@ -65,7 +65,10 @@ namespace PizzaFunction.Functions
                     Id = orderId,
                     OrderId = orderId,
                     OrderNo = orderNo,
-                    CustomerName = data.customer.name.ToString(),
+                    CustomerFirstName = data.customer.firstName.ToString(),
+                    CustomerLastName = data.customer.lastName.ToString(),
+                    CustomerPhoneNumber = data.customer.phoneNumber.ToString(),
+                    CustomerEmail = data.customer.email.ToString(),
                     OrderStatus = "Mottagen",
                     OrderTime = DateTime.Now.ToString("HH:mm"),   
                     Pizzas = pizzas
