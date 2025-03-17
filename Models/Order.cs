@@ -37,7 +37,7 @@ namespace PizzaFunction.Models
         public string OrderTime { get; set; } = null!;
 
         [JsonProperty(nameof(LastUpdateTime))]
-        public string LastUpdateTime { get; set; } = null!;
+        public DateTime LastUpdateTime { get; set; }
 
         [JsonProperty(nameof(Pizzas))]
         public List<Pizza> Pizzas { get; set; } = null!;

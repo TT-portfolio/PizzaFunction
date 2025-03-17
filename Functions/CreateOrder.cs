@@ -88,7 +88,7 @@ namespace PizzaFunction.Functions
                         CustomerEmail = data.customer.email.ToString(),
                         OrderStatus = "Mottagen",
                         OrderTime = DateTime.Now.ToString("yyyy/MM/dd HH:mm"),
-                        LastUpdateTime = DateTime.Now.ToString("yyyy-MM-dd HH:mm"),
+                        LastUpdateTime = DateTime.Now,
                         Pizzas = pizzas
                     };
 

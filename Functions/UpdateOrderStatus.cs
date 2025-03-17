@@ -54,6 +54,7 @@ namespace PizzaFunction.Functions
                         }
 
                         order.OrderStatus = newStatus;
+                        order.LastUpdateTime = DateTime.Now;
                         await container.UpsertItemAsync(order, new PartitionKey(orderId));
 
                         return new OkObjectResult(new
