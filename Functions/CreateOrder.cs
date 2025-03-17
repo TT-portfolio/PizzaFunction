@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
-using PizzaFunction.Models;
 using Newtonsoft.Json;
+using PizzaFunction.Models;
 
 namespace PizzaFunction.Functions
 {
@@ -42,55 +42,68 @@ namespace PizzaFunction.Functions
                     return new BadRequestObjectResult(new { message = "Customer and items data required" });
                 }
 
-                // Create new order
-                var orderNo = Guid.NewGuid().ToString().Substring(0, 10).ToUpper();  //creates unique orderNo, Guids 10 first number/letters 
-                var orderId = Guid.NewGuid().ToString(); //orderId for Db
-
-                // Create PizzaList
-                var pizzas = new List<Pizza>();
-
-                // Get pizzas from dataitems
-                foreach (var item in data.items)
-                {
-                    pizzas.Add(new Pizza
-                    {
-                        PizzaName = item.name.ToString(),
-                        Quantity = item.quantity.ToString(),
-                        Price = item.price.ToString()
-                    });
-                }
-
-                var order = new Order
-                {
-                    Id = orderId,
-                    OrderId = orderId,
-                    OrderNo = orderNo,
-                    CustomerFirstName = data.customer.firstName.ToString(),
-                    CustomerLastName = data.customer.lastName.ToString(),
-                    CustomerPhoneNumber = data.customer.phoneNumber.ToString(),
-                    CustomerEmail = data.customer.email.ToString(),
-                    OrderStatus = "Mottagen",
-                    OrderTime = DateTime.Now.ToString("HH:mm"),   
-                    Pizzas = pizzas
-                };
-
-                _logger.LogInformation($"Created order with ID: {orderId}");
-
-                // Save order to Cosmos DB
                 using (CosmosClient cosmosClient = new CosmosClient(cosmosDbConnectionString))
                 {
                     var database = cosmosClient.GetDatabase("Resturant");
                     var container = database.GetContainer("Orders");
+
+                    var query = new QueryDefinition("SELECT TOP 1 c.OrderNo FROM c ORDER BY c.OrderNo DESC");
+                    using FeedIterator<dynamic> resultSet = container.GetItemQueryIterator<dynamic>(query);
+
+                    int latestOrderNo = 0;
+                    if (resultSet.HasMoreResults)
+                    {
+                        var response = await resultSet.ReadNextAsync();
+                        if (response.Count > 0)
+                        {
+                            latestOrderNo = response.First().OrderNo;
+                        }
+                    }
+                    // Create new order
+                    int orderNo = latestOrderNo + 1;                   
+                    var orderId = Guid.NewGuid().ToString(); //orderId for Db
+
+                    // Create PizzaList
+                    var pizzas = new List<Pizza>();
+
+                    // Get pizzas from dataitems
+                    foreach (var item in data.items)
+                    {
+                        pizzas.Add(new Pizza
+                        {
+                            PizzaName = item.name.ToString(),
+                            Quantity = item.quantity.ToString(),
+                            Price = item.price.ToString()
+                        });
+                    }
+
+                    var order = new Order
+                    {
+                        Id = orderId,
+                        OrderId = orderId,
+                        OrderNo = orderNo,
+                        CustomerFirstName = data.customer.firstName.ToString(),
+                        CustomerLastName = data.customer.lastName.ToString(),
+                        CustomerPhoneNumber = data.customer.phoneNumber.ToString(),
+                        CustomerEmail = data.customer.email.ToString(),
+                        OrderStatus = "Mottagen",
+                        OrderTime = DateTime.Now.ToString("HH:mm"),
+                        Pizzas = pizzas
+                    };
+
+                    _logger.LogInformation($"Created order with ID: {orderId}");
+
+                    // Save order to Cosmos DB
                     await container.CreateItemAsync(order, new PartitionKey(orderId));
                     _logger.LogInformation("Order saved to Cosmos DB successfully");
-                }
 
-                return new OkObjectResult(new
-                {
-                    message = "Order created successfully",
-                    orderId = orderId,
-                    orderNo = orderNo
-                });
+                    return new OkObjectResult(new
+                    {
+                        message = "Order created successfully",
+                        orderId = orderId,
+                        orderNo = orderNo
+                    });
+                }
             }
             catch (Exception ex)
             {

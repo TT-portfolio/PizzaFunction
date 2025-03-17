@@ -13,7 +13,7 @@ namespace PizzaFunction.Models
         public string Id { get; set; } = null!;
 
         [JsonProperty(nameof(OrderNo))]
-        public string OrderNo { get; set; } = null!;
+        public int OrderNo { get; set; } 
 
         [JsonProperty(nameof(OrderId))]
         public string OrderId { get; set; } = null!;
