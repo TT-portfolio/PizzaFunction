@@ -7,6 +7,8 @@ using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using PizzaFunction.Models;
+using static PizzaFunction.InternalMethods.LastOrder;
+
 
 namespace PizzaFunction.Functions
 {
@@ -45,22 +47,18 @@ namespace PizzaFunction.Functions
                 using (CosmosClient cosmosClient = new CosmosClient(cosmosDbConnectionString))
                 {
                     var database = cosmosClient.GetDatabase("Resturant");
-                    var container = database.GetContainer("Orders");
+                    var ordersContainer = database.GetContainer("Orders");
+                    var completedOrders = database.GetContainer("DailyCompletedOrders");
 
                     var query = new QueryDefinition("SELECT TOP 1 c.OrderNo FROM c ORDER BY c.OrderNo DESC");
-                    using FeedIterator<dynamic> resultSet = container.GetItemQueryIterator<dynamic>(query);
 
-                    int latestOrderNo = 0;
-                    if (resultSet.HasMoreResults)
-                    {
-                        var response = await resultSet.ReadNextAsync();
-                        if (response.Count > 0)
-                        {
-                            latestOrderNo = response.First().OrderNo;
-                        }
-                    }
+                    int lastActiveOrderNo = await GetLastOrderNo(ordersContainer);
+                    int lastCompletedOrderNo = await GetLastOrderNo(completedOrders);
+
+                    int latestOrderNo = lastActiveOrderNo > lastCompletedOrderNo ? lastActiveOrderNo: lastCompletedOrderNo;
+
                     // Create new order
-                    int orderNo = latestOrderNo + 1;                   
+                    int orderNo = latestOrderNo + 1;
                     var orderId = Guid.NewGuid().ToString(); //orderId for Db
 
                     // Create PizzaList
@@ -95,7 +93,7 @@ namespace PizzaFunction.Functions
                     _logger.LogInformation($"Created order with ID: {orderId}");
 
                     // Save order to Cosmos DB
-                    await container.CreateItemAsync(order, new PartitionKey(orderId));
+                    await ordersContainer.CreateItemAsync(order, new PartitionKey(orderId));
                     _logger.LogInformation("Order saved to Cosmos DB successfully");
 
                     return new OkObjectResult(new
@@ -112,5 +110,7 @@ namespace PizzaFunction.Functions
                 return new StatusCodeResult(StatusCodes.Status500InternalServerError);
             }
         }
+
+        
     }
 }
