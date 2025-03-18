@@ -22,7 +22,7 @@ namespace PizzaFunction.Functions
             var client = new SecretClient(new Uri(KeyVaultUri), new DefaultAzureCredential());
             var secret = await client.GetSecretAsync("PizzaOrderCosmos");
 
-            _logger.LogInformation("Secret retrieved successfully: {SecretValue}", secret.Value.Value);
+            // _logger.LogInformation("Secret retrieved successfully: {SecretValue}", secret.Value.Value);
 
             string cosmosDbConnectionstring = (await client.GetSecretAsync("PizzaOrderCosmos")).Value.Value;
 
@@ -37,7 +37,7 @@ namespace PizzaFunction.Functions
             {
                 var response = await iterator.ReadNextAsync();
 
-                _logger.LogInformation("Raw Cosmos DB response: {json}", Newtonsoft.Json.JsonConvert.SerializeObject(response));
+                //_logger.LogInformation("Raw Cosmos DB response: {json}", Newtonsoft.Json.JsonConvert.SerializeObject(response));
 
                 orders.AddRange(response);
                 foreach (var item in await iterator.ReadNextAsync())
@@ -46,7 +46,7 @@ namespace PizzaFunction.Functions
                 }
             }
 
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            _logger.LogInformation("C# HTTP trigger function processed a request for GetOrders.");
             return new OkObjectResult(orders);
         }
     }

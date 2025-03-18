@@ -54,7 +54,7 @@ namespace PizzaFunction.Functions
                         }
 
                         order.OrderStatus = newStatus;
-                        order.LastUpdateTime = DateTime.Now;
+                        order.LastUpdateTime = DateTime.UtcNow;
                         await container.UpsertItemAsync(order, new PartitionKey(orderId));
 
                         return new OkObjectResult(new
@@ -76,7 +76,7 @@ namespace PizzaFunction.Functions
                 _logger.LogError($"Error updating order: {ex.Message}");
                 return new NotFoundObjectResult(new { message = "Order not found" });
             }
-            _logger.LogInformation("C# HTTP trigger function processed a request.");
+            // _logger.LogInformation("C# HTTP trigger function processed a request.");
             return new OkObjectResult("Welcome to Azure Functions!");
         }
     }

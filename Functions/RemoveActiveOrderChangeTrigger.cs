@@ -5,41 +5,40 @@ using System.Text.Json;
 
 namespace PizzaFunction.Functions
 {
-    public class CosmosBdChangeTrigger
+    public class RemoveActiveOrderChangeTrigger
     {
         private readonly ILogger _logger;
 
-        public CosmosBdChangeTrigger(ILoggerFactory loggerFactory)
+        public RemoveActiveOrderChangeTrigger(ILoggerFactory loggerFactory)
         {
-            _logger = loggerFactory.CreateLogger<CosmosBdChangeTrigger>();
+            _logger = loggerFactory.CreateLogger<RemoveActiveOrderChangeTrigger>();
         }
 
-        [Function("CosmosBdChangeTrigger")]
+        [Function("RemoveActiveOrderChangeTrigger")]
         [SignalROutput(HubName = "orders", ConnectionStringSetting = "AzureSignalRConnectionString")]
         public SignalRMessageAction Run(
             [CosmosDBTrigger(
             databaseName: "Resturant",
-            containerName: "Orders",
+            containerName: "DailyCompletedOrders",
             Connection = "CosmosDBConnection",
             LeaseContainerName = "leases",
             CreateLeaseContainerIfNotExists = true)] IReadOnlyList<SendModel> input)
-
         {
 
             if (input != null && input.Count > 0)
             {
 
                 _logger.LogInformation($"Documents modified: {input.Count}");
-                // _logger.LogInformation($"First document Id: {input[0].id}");
-                _logger.LogInformation($"First document Id: {input[0].OrderNo}");
+                _logger.LogInformation($"First document Id: {input[0].id}");
                 _logger.LogInformation($"Skickar uppdatering till SignalR: {JsonSerializer.Serialize(input[0])}");
+                _logger.LogInformation($"Försöker skicka SingalRMess");
+                _logger.LogInformation($"Dokumentdata: {JsonSerializer.Serialize(input[0])}");
 
                 return new SignalRMessageAction("orderUpdated")
                 {
 
                     Arguments = new[] { input[0] }
                 };
-
             }
             return null;
         }
