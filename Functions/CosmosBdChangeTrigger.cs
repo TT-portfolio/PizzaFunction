@@ -23,12 +23,10 @@ namespace PizzaFunction.Functions
             Connection = "CosmosDBConnection",
             LeaseContainerName = "leases",
             CreateLeaseContainerIfNotExists = true)] IReadOnlyList<SendModel> input)
-
         {
 
             if (input != null && input.Count > 0)
             {
-
                 _logger.LogInformation($"Documents modified: {input.Count}");
                 // _logger.LogInformation($"First document Id: {input[0].id}");
                 _logger.LogInformation($"First document Id: {input[0].OrderNo}");
@@ -36,10 +34,8 @@ namespace PizzaFunction.Functions
 
                 return new SignalRMessageAction("orderUpdated")
                 {
-
                     Arguments = new[] { input[0] }
                 };
-
             }
             return null;
         }

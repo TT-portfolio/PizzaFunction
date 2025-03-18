@@ -10,7 +10,7 @@ namespace PizzaFunction.Models
     {
         public string id { get; set; }
         public int OrderNo { get; set; }
-        public string OrderStatus { get; set; }
+        public string OrderStatus { get; set; } = null!;
         public DateTime LastUpdateTime { get; set; }
     }
 }

@@ -21,7 +21,7 @@ namespace PizzaFunction.Functions
             databaseName: "Resturant",
             containerName: "DailyCompletedOrders",
             Connection = "CosmosDBConnection",
-            LeaseContainerName = "leases",
+            LeaseContainerName = "leaseCompletedDaily",
             CreateLeaseContainerIfNotExists = true)] IReadOnlyList<SendModel> input)
         {
 
