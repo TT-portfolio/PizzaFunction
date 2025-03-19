@@ -19,7 +19,7 @@ public class MoveCompleatedOrdersFunction
     }
 
     [Function("MoveCompleatedOrdersFunction")]
-    public async Task Run([TimerTrigger("0 * * * * *")] TimerInfo myTimer)
+    public async Task Run([TimerTrigger("0 0/5 * * * *")] TimerInfo myTimer)
     {
         _logger.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
         
@@ -33,7 +33,7 @@ public class MoveCompleatedOrdersFunction
                 var database = cosmosClient.GetDatabase("Resturant");
                 var activeOrdersContainer = database.GetContainer("Orders");
                 var dailyOrdersContainer = database.GetContainer("DailyCompletedOrders");
-                var thirtyMinutesAgo = DateTime.UtcNow.AddMinutes(-1).ToString("o");
+                var thirtyMinutesAgo = DateTime.UtcNow.AddMinutes(-30).ToString("o");
 
                 var query = new QueryDefinition(
                     "SELECT * FROM c WHERE c.OrderStatus = 'Avslutad' AND c.LastUpdateTime < @time"
