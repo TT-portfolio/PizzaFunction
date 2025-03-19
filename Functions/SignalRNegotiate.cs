@@ -21,7 +21,7 @@ namespace PizzaFunction.Functions
             [HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData req,
             [SignalRConnectionInfoInput(HubName = "orders")] SignalRConnectionInfo connectionInfo)
         {
-            _logger.LogInformation($"SignalR Connection URL = '{connectionInfo.Url}'");
+            // _logger.LogInformation($"SignalR Connection URL = '{connectionInfo.Url}'");
 
             var response = req.CreateResponse(HttpStatusCode.OK);
             response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
