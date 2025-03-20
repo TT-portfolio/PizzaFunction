@@ -7,7 +7,8 @@ namespace PizzaFunction.InternalMethods
 
         public static async Task<int> GetLastOrderNo(Container container)
         {
-            using FeedIterator<dynamic> resultSet = container.GetItemQueryIterator<dynamic>();
+            var query = new QueryDefinition("SELECT TOP 1 c.OrderNo FROM c ORDER BY c.OrderNo DESC");
+            using FeedIterator<dynamic> resultSet = container.GetItemQueryIterator<dynamic>(query);
             if (resultSet.HasMoreResults)
             {
                 var response = await resultSet.ReadNextAsync();
