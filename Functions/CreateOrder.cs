@@ -50,7 +50,7 @@ namespace PizzaFunction.Functions
                     var ordersContainer = database.GetContainer("Orders");
                     var completedOrders = database.GetContainer("DailyCompletedOrders");
 
-                    var query = new QueryDefinition("SELECT TOP 1 c.OrderNo FROM c ORDER BY c.OrderNo DESC");
+                    
 
                     int lastActiveOrderNo = await GetLastOrderNo(ordersContainer);
                     int lastCompletedOrderNo = await GetLastOrderNo(completedOrders);
