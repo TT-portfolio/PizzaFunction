@@ -32,9 +32,21 @@ namespace PizzaFunction.Functions
         }
 
         [Function("GetOrderById")]
-        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get")] HttpRequest req)
+        public async Task<IActionResult> Run([HttpTrigger(AuthorizationLevel.Function, "get", "post")] HttpRequest req)
         {
-            string orderId = req.Query["id"];
+            string orderId;
+
+            if (req.Method == "GET")
+            {
+                orderId = req.Query["id"];
+            }else
+            {
+                using var reader = new StreamReader(req.Body);
+                var requestBody = await reader.ReadToEndAsync();
+                var data = JsonSerializer.Deserialize<Dictionary<string, string>>(requestBody);
+                orderId = data?["id"];
+            }
+
             if (string.IsNullOrEmpty(orderId))
             {
                 _logger.LogWarning("No Id provided in the request");
