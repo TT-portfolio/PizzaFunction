@@ -19,7 +19,39 @@ namespace PizzaFunction.Functions
         [Function("GetOrders")]
         public async Task <IActionResult> Run([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequest req)
         {
-            var client = new SecretClient(new Uri(KeyVaultUri), new DefaultAzureCredential());
+            // Kolla om vi kör i testläge
+            string test = req.Query["test"];
+            string variant = req.Query["variant"];
+
+            if (test == "true")
+            {
+                List<Order> mockOrders = variant switch
+                {
+                    "empty" => [],
+                    "single" => [
+                        new Order
+                {
+                    Id = "mock123",
+                    OrderStatus = "Mottagen",
+                    CustomerFirstName = "Testperson",
+                    CustomerLastName = "Testsson",
+                    OrderTime = "12:00",
+                    Pizzas = new List<Pizza> {
+                        new Pizza {
+                            PizzaName = "Margarita",
+                            Quantity="1",
+                            Price="125"
+                        }
+                    }
+
+                }
+                    ],
+                    _ => [] // default tom lista
+                };
+                return new OkObjectResult(mockOrders);
+            }
+
+                var client = new SecretClient(new Uri(KeyVaultUri), new DefaultAzureCredential());
             var secret = await client.GetSecretAsync("PizzaOrderCosmos");
 
             // _logger.LogInformation("Secret retrieved successfully: {SecretValue}", secret.Value.Value);
