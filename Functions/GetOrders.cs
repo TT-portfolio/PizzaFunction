@@ -32,6 +32,7 @@ namespace PizzaFunction.Functions
                         new Order
                 {
                     Id = "mock123",
+                    OrderId= "25",
                     OrderStatus = "Mottagen",
                     CustomerFirstName = "Testperson",
                     CustomerLastName = "Testsson",
